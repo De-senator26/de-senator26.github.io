@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Automating GitHub with the API and Python | ANSTECH</title>
+<meta name="description" content="A short Python script that uses the GitHub API to find your stale repositories, with the code and real output.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF1EF;--surface:#F8FAF9;--ink:#14201C;--muted:#4C5B55;--line:#C9D4CF;--accent:#0F6B63;--accent-ink:#FFFFFF;--code-bg:#14201C;--code-ink:#D7E6DF;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0F1614;--surface:#16201D;--ink:#E6EFEB;--muted:#9DB0A8;--line:#2A3833;--accent:#4FC3B5;--accent-ink:#0F1614;--code-bg:#0A100E;--code-ink:#D7E6DF}
+}
+:root[data-theme="dark"]{--bg:#0F1614;--surface:#16201D;--ink:#E6EFEB;--muted:#9DB0A8;--line:#2A3833;--accent:#4FC3B5;--accent-ink:#0F1614;--code-bg:#0A100E;--code-ink:#D7E6DF}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:20px;line-height:1.65}
+h1,h2,.sans{font-family:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:720px;margin:0 auto;padding:0 24px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:"Familjen Grotesk",sans-serif;font-weight:700;font-size:21px;letter-spacing:.03em;color:var(--ink);text-decoration:none}
+.brand svg{width:34px;height:34px;flex:none}
+header a.back{font-family:"Familjen Grotesk",sans-serif;font-weight:500;font-size:16px;text-decoration:none}
+h1{font-size:clamp(32px,5vw,48px);line-height:1.1;letter-spacing:-.02em;margin:36px 0 12px}
+.meta{font-family:"Familjen Grotesk",sans-serif;font-size:15px;color:var(--muted);margin:0 0 32px}
+h2{font-size:28px;letter-spacing:-.01em;margin:44px 0 10px}
+p{margin:0 0 18px}
+pre{margin:0 0 22px;background:var(--code-bg);color:var(--code-ink);border-radius:8px;padding:18px 20px;font:14px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-x:auto;max-width:100%}
+code{font:0.88em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+pre code{background:none;border:0;padding:0;font-size:inherit}
+ul{padding-left:22px;margin:0 0 18px}
+li{margin-bottom:8px}
+.cta{margin:44px 0 0;padding:26px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.cta p{margin:0 0 14px}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);font-family:"Familjen Grotesk",sans-serif;font-weight:700;font-size:17px;padding:12px 20px;border-radius:6px;text-decoration:none}
+footer{padding:40px 0 48px;color:var(--muted);font-family:"Familjen Grotesk",sans-serif;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="index.html" aria-label="ANSTECH home"><svg viewBox="0 0 32 32" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="var(--accent)"/><path d="M6 24 15 8 24 24V8" fill="none" stroke="var(--accent-ink)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.6 18h8.6" fill="none" stroke="var(--accent-ink)" stroke-width="2.6" stroke-linecap="round"/></svg>ANSTECH</a>
+    <a class="back" href="index.html#writing">All writing</a>
+  </header>
+
+  <main>
+    <article>
+      <h1>Automating GitHub with the API and Python: a stale-repo report</h1>
+      <p class="meta">By Tombir Anslem Swengka, 20 October 2026</p>
+
+      <p>Every developer’s GitHub account collects half-finished projects. Mine had nine repositories, and I wanted to know at a glance which ones I had stopped touching. Checking each one by hand is slow, so I wrote a small Python script that asks the GitHub API and prints a report.</p>
+
+      <p>Here is what it printed for my own account:</p>
+<pre><code>name                      language    stars  open_issues  days_since_push  stale
+automation-scripts        Python      0      0            0                no
+portfolio                 HTML        0      0            13               no
+cornhouse-cm              Python      0      0            42               no
+smart-farm                -           0      0            53               no
+SMART-FARMER-MARKETPLACE  -           0      0            103              no
+MERN-TASK-APP             JavaScript  0      0            406              yes
+responsive-navbar         -           0      0            434              yes
+forget-password           CSS         0      0            805              yes
+my-cv                     HTML        0      0            838              yes
+
+9 repos, 4 stale (no push in 180+ days).</code></pre>
+      <p>Four of nine repositories had not been touched in over six months. That is the kind of thing you never notice until you look.</p>
+
+      <h2>How it works</h2>
+      <p><strong>1. Ask the API for your repositories.</strong> GitHub lists every public repository for a user at <code>/users/{user}/repos</code>. The script requests them 100 at a time and keeps going until a page comes back empty, so it works whether you have 9 repositories or 900:</p>
+<pre><code>resp = requests.get(
+    f"{API}/users/{user}/repos",
+    params={"per_page": 100, "page": page, "type": "owner"},
+    timeout=15,
+)</code></pre>
+      <p><strong>2. Work out how long each repository has been quiet.</strong> The API returns a <code>pushed_at</code> timestamp for each one. The script subtracts it from today’s date to get the number of days since the last push.</p>
+      <p><strong>3. Flag the stale ones.</strong> Anything with no push in 180 days is marked stale. You can change that with <code>--stale-days</code>. The table is sorted so the most recently active repositories appear first.</p>
+      <p><strong>4. Export if you want.</strong> Add <code>--csv report.csv</code> and you get a file you can open in a spreadsheet.</p>
+<pre><code>python repo_report.py YOUR-USERNAME --stale-days 90 --csv report.csv</code></pre>
+
+      <h2>A word about tokens</h2>
+      <p>You don’t need a token to run this on public repositories. Without one, GitHub allows 60 API requests an hour, which is plenty for a single report. If you want more, you can set a personal access token as an environment variable. Two rules matter:</p>
+      <ul>
+        <li>Give the token read-only access, and nothing more than the script needs.</li>
+        <li>Never paste a token into your code or commit it to a repository. That is why the script reads it from <code>GITHUB_TOKEN</code>, and why the project’s <code>.gitignore</code> excludes <code>.env</code> files.</li>
+      </ul>
+
+      <h2>What I’d do with the results</h2>
+      <p>Looking at the list, the four stale repositories tell the story of how I learned. <code>responsive-navbar</code>, <code>forget-password</code> and <code>my-cv</code> are early practice projects, so I’m archiving them. They stay visible as a record of where I started, but they no longer pretend to be active work. <code>MERN-TASK-APP</code> is different. It uses the MERN stack I work with most, so it’s worth either finishing or cleaning up with a proper README.</p>
+      <p>The bigger surprise went the other way: five of my nine repositories, including <code>cornhouse-cm</code> and <code>smart-farm</code>, have been pushed to in the last four months. That is the real value of a report like this. It doesn’t just show what you’ve neglected, it shows where your time is actually going.</p>
+
+      <div class="cta">
+        <p><strong>Get the code.</strong> The full script, tests and README are on GitHub. Run it on your own account and see what you find.</p>
+        <a class="btn" href="https://github.com/De-senator26/automation-scripts" rel="noopener">View the repository</a>
+      </div>
+    </article>
+  </main>
+
+  <footer>© 2026 ANSTECH. Built by Tombir Anslem Swengka in Yaoundé, Cameroon. <a href="https://github.com/De-senator26" rel="noopener">GitHub: De-senator26</a></footer>
+</div>
+</body>
+</html>
