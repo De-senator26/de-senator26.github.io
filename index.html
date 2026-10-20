@@ -156,9 +156,9 @@ jobs:
     <section id="subscribe">
       <h2>Get new posts by email</h2>
       <p class="sub">One practical automation, now and then. No spam, unsubscribe any time.</p>
-      <form class="sign" id="signup" novalidate>
+      <form class="sign" id="signup" action="https://buttondown.com/api/emails/embed-subscribe/Tombir26" method="post" novalidate>
         <input type="email" id="email" name="email" placeholder="you@company.com" aria-label="Email address" autocomplete="email" required>
-        <input type="hidden" id="utm" name="utm" value="">
+        <input type="hidden" value="1" name="embed">
         <button class="btn" type="submit">Subscribe</button>
       </form>
       <p class="msg" id="msg" role="status" aria-live="polite"></p>
@@ -170,7 +170,7 @@ jobs:
 
 <script>
 (function(){
-  // Capture UTM parameters from the landing URL so signups and inquiries can be attributed.
+  // Capture UTM parameters from the landing URL so inquiries can be attributed.
   var keys=['utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
   var params={};
   try{
@@ -180,23 +180,18 @@ jobs:
     else{var s=sessionStorage.getItem('utm');if(s)params=JSON.parse(s)}
   }catch(e){}
   var utmStr=Object.keys(params).map(function(k){return k+'='+params[k]}).join('&');
-  document.getElementById('utm').value=utmStr;
 
   var hire=document.getElementById('hire');
   if(utmStr){hire.href+='&body='+encodeURIComponent('(source: '+utmStr+')')}
 
   var form=document.getElementById('signup'),msg=document.getElementById('msg'),email=document.getElementById('email');
   form.addEventListener('submit',function(e){
-    e.preventDefault();
     var v=email.value.trim();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){
+      e.preventDefault();
       msg.textContent='Enter a valid email address, like you@company.com.';
-      email.focus();return;
+      email.focus();
     }
-    // TODO: send {email: v, utm: utmStr} to your email provider (Buttondown, ConvertKit, Mailchimp, etc.).
-    msg.textContent='Thanks, you’re on the list.';
-    form.reset();
-    document.getElementById('utm').value=utmStr;
   });
 })();
 </script>
